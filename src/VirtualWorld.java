@@ -89,7 +89,7 @@ public final class VirtualWorld extends PApplet {
             world.setBackgroundCell(destPoint, tombstone);
             rand_tombsAndMausoleums--;
         }
-        Entity newUnDude = Factory.createUnDude(FileParser.DUDE_KEY, pressed, 0.8, 0.180, imageStore.getImageList(FileParser.DUDE_KEY));
+        Entity newUnDude = Factory.createUnDude(FileParser.UNDUDE_KEY, pressed, 0.8, 0.180, imageStore.getImageList(FileParser.UNDUDE_KEY));
         world.tryAddEntity(newUnDude);
         ((Active)newUnDude).scheduleActions(scheduler, world, imageStore);
     }

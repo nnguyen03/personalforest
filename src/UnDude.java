@@ -25,14 +25,13 @@ public class UnDude implements Moving{
     }
 
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
-            //TODO! This is
         // something wrong here for sure
         // TODO! Conditional for when no more dudes in world, then popup message using background tiles of VirtualWorld
         // Right now, breaks when no more dudes left in world
         Optional<Entity> target = world.findNearest(this.position, new ArrayList<>(Arrays.asList(DudeNotFull.class, DudeFull.class)));
         if (this.moveTo(world, target.get(), scheduler)) {
             Point tgtPos = target.get().getPosition();
-            Entity unDude = Factory.createUnDude(FileParser.DUDE_KEY, tgtPos, 0.8, 0.180, imageStore.getImageList(FileParser.DUDE_KEY));
+            Entity unDude = Factory.createUnDude(FileParser.UNDUDE_KEY, tgtPos, 0.8, 0.180, imageStore.getImageList(FileParser.UNDUDE_KEY));
             world.addEntity(unDude);
             ((Active)unDude).scheduleActions(scheduler, world, imageStore);
         }
