@@ -77,16 +77,25 @@ public final class VirtualWorld extends PApplet {
         zombiesAndSurpriseAlsoGod(pressed);
 
         // Second event
+        grimEvent(pressed);
 
     }
 
-    private void theGrimReaperDecidedToJoinForSomeReason(Point pressed){
+    private void grimEvent(Point pressed){
         // TODO! Second event IN PROGRESS
         // TODO! Two parts. Visualization and New Entity.
 
         // draw castles on screen in proximity to mouse click
+        castleVisualization(pressed);
+        Optional<Entity> tgtHouse = world.findNearest(pressed, new ArrayList<>(List.of(House.class)));
 
-        // spawn Grim Reaper
+        if (tgtHouse.isPresent()) {
+            Point tgtPos = tgtHouse.get().getPosition();
+            Entity grimReaper = Factory.createGrim(FileParser.GRIM_KEY, tgtPos, 0.8, 0.180, imageStore.getImageList(FileParser.GRIM_KEY));
+            world.addEntity(grimReaper);
+            ((Active) grimReaper).scheduleActions(scheduler, world, imageStore);
+        }
+
     }
 
     private void zombiesAndSurpriseAlsoGod (Point pressed){
@@ -135,6 +144,28 @@ public final class VirtualWorld extends PApplet {
 
             world.setBackgroundCell(destPoint, tombstone);
             rand_tombsAndMausoleums--;
+        }
+    }
+    // TODO!
+    private void castleVisualization(Point pressed){
+        int randCastle = rand.nextInt(7, 14);
+        int loop_counter = 20;
+        while(randCastle > 0){
+            if(loop_counter == 0){
+                break;
+            }
+            Background castle = new Background("castle", imageStore.getImageList("castle"));
+            Point destPoint = new Point(pressed.x + rand.nextInt(4), pressed.y + rand.nextInt(4));
+            Optional<PImage> image = this.world.getBackgroundImage(destPoint);
+
+            // if background cell is already tombstone then rerun loop until tombstone can be placed elsewhere
+            if(image.equals(imageStore.getImageList("castle"))){
+                loop_counter--;
+                continue;
+            }
+
+            world.setBackgroundCell(destPoint, castle);
+            randCastle--;
         }
     }
 

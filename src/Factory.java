@@ -10,6 +10,10 @@ public class Factory {
         return new UnDude(id, position, images, actionPeriod, animationPeriod);
     }
 
+    public static Entity createGrim(String id, Point position, double actionPeriod, double animationPeriod, List<PImage> images){
+        return new Grim(id, position, images, actionPeriod, animationPeriod);
+    }
+
     public static Entity createHouse(String id, Point position, List<PImage> images) {
         return new House(id, position, images);
     }

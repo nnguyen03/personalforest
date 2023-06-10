@@ -5,12 +5,14 @@ public final class House implements Entity{
     private Point position;
     private final List<PImage> images;
     private final int imageIndex;
+    private boolean hasUndude = false;
 
     public House(String id, Point position, List<PImage> images){
         this.id = id;
         this.position = position;
         this.images = images;
         this.imageIndex = 0;
+        this.hasUndude = false;
     }
 
     public Point getPosition(){
@@ -32,4 +34,12 @@ public final class House implements Entity{
     public PImage getCurrentImage() {
         return this.images.get(imageIndex % images.size());
     }
+    public boolean hasUndude() {
+        return hasUndude;
+    }
+
+    public void setUndude(boolean hasUndude) {
+        this.hasUndude = hasUndude;
+    }
 }
+

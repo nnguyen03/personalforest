@@ -1,11 +1,13 @@
 import processing.core.PImage;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class UnDude implements Moving{
     private final String id;
@@ -25,9 +27,19 @@ public class UnDude implements Moving{
     }
 
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
-        // something wrong here for sure
-        // TODO! Conditional for when no more dudes in world, then popup message using background tiles of VirtualWorld
-        // Right now, breaks when no more dudes left in world
+        // TODO! Potential Issue: JOptionPane popup taking multiple clicks to close out
+        // Check if any dudes are left
+        List<Entity> dudes = world.getEntities().stream()
+                .filter(entity -> entity instanceof DudeNotFull || entity instanceof DudeFull).toList();
+
+        if (dudes.isEmpty()) {
+            // End message using JOptionPane
+            JOptionPane.showMessageDialog(null, "GAME OVER! Grroooaan. Bone appetit. - Undudes");
+
+            // Empty space for any other necessary actions when all dudes are eaten (if needed to be added)
+
+            return;
+        }
         Optional<Entity> target = world.findNearest(this.position, new ArrayList<>(Arrays.asList(DudeNotFull.class, DudeFull.class)));
         Point tgtPos = target.get().getPosition();
         if (this.moveTo(world, target.get(), scheduler)) {
