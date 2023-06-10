@@ -69,7 +69,54 @@ public final class VirtualWorld extends PApplet {
     // Just for debugging and for P5
     // Be sure to refactor this method as appropriate
     public void mousePressed() {
+        //TODO! Figure out how we will trigger the two events...simultaneously or separately?
+
+        // get location of mouse click
         Point pressed = mouseToPoint();
+        // First event
+        zombiesAndSurpriseAlsoGod(pressed);
+
+        // Second event
+
+    }
+
+    private void theGrimReaperDecidedToJoinForSomeReason(Point pressed){
+        // TODO! Second event IN PROGRESS
+        // TODO! Two parts. Visualization and New Entity.
+
+        // draw castles on screen in proximity to mouse click
+
+        // spawn Grim Reaper
+    }
+
+    private void zombiesAndSurpriseAlsoGod (Point pressed){
+        // TODO! First event IN PROGRESS
+        // TODO! New Entity
+
+        // draw tombstones on screen in proximity to mouse click
+        tombstoneVisualization(pressed);
+        // get list of dudes within some range of mouse click
+        List<Entity> dudesNearby = world.inProximity(pressed, new ArrayList<>(Arrays.asList(DudeNotFull.class, DudeFull.class)), 10);
+        // transform dudes in range into UnDudes
+        theWalkingDude(dudesNearby);
+
+        // spawn God
+    }
+
+    private void theWalkingDude(List<Entity> dudesNearby){
+        if(dudesNearby.size() > 0) {
+            for (Entity dude: dudesNearby){
+                Point replaceDude = dude.getPosition();
+                world.removeEntity(scheduler, dude);
+                scheduler.unscheduleAllEvents(dude);
+                Entity newUnDude = Factory.createUnDude(FileParser.UNDUDE_KEY, replaceDude, 0.8, 0.180, imageStore.getImageList(FileParser.UNDUDE_KEY));
+                world.tryAddEntity(newUnDude);
+                ((Active)newUnDude).scheduleActions(scheduler, world, imageStore);
+            }
+        }
+    }
+
+    private void tombstoneVisualization(Point pressed){
         int rand_tombsAndMausoleums = rand.nextInt(7, 14);
         int loop_counter = 20;
         while(rand_tombsAndMausoleums > 0){
@@ -88,17 +135,6 @@ public final class VirtualWorld extends PApplet {
 
             world.setBackgroundCell(destPoint, tombstone);
             rand_tombsAndMausoleums--;
-        }
-        List<Entity> dudesNearby = world.inProximity(pressed, new ArrayList<>(Arrays.asList(DudeNotFull.class, DudeFull.class)), 10);
-        if(dudesNearby.size() > 0) {
-            for (Entity dude: dudesNearby){
-                Point replaceDude = dude.getPosition();
-                world.removeEntity(scheduler, dude);
-                scheduler.unscheduleAllEvents(dude);
-                Entity newUnDude = Factory.createUnDude(FileParser.UNDUDE_KEY, replaceDude, 0.8, 0.180, imageStore.getImageList(FileParser.UNDUDE_KEY));
-                world.tryAddEntity(newUnDude);
-                ((Active)newUnDude).scheduleActions(scheduler, world, imageStore);
-            }
         }
     }
 
