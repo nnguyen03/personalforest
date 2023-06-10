@@ -89,9 +89,17 @@ public final class VirtualWorld extends PApplet {
             world.setBackgroundCell(destPoint, tombstone);
             rand_tombsAndMausoleums--;
         }
-        Entity newUnDude = Factory.createUnDude(FileParser.UNDUDE_KEY, pressed, 0.8, 0.180, imageStore.getImageList(FileParser.UNDUDE_KEY));
-        world.tryAddEntity(newUnDude);
-        ((Active)newUnDude).scheduleActions(scheduler, world, imageStore);
+        List<Entity> dudesNearby = world.inProximity(pressed, new ArrayList<>(Arrays.asList(DudeNotFull.class, DudeFull.class)), 10);
+        if(dudesNearby.size() > 0) {
+            for (Entity dude: dudesNearby){
+                Point replaceDude = dude.getPosition();
+                world.removeEntity(scheduler, dude);
+                scheduler.unscheduleAllEvents(dude);
+                Entity newUnDude = Factory.createUnDude(FileParser.UNDUDE_KEY, replaceDude, 0.8, 0.180, imageStore.getImageList(FileParser.UNDUDE_KEY));
+                world.tryAddEntity(newUnDude);
+                ((Active)newUnDude).scheduleActions(scheduler, world, imageStore);
+            }
+        }
     }
 
     public void scheduleActions(WorldModel world, EventScheduler scheduler, ImageStore imageStore) {

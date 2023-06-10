@@ -40,7 +40,11 @@ public class UnDude implements Moving{
 
     public Point nextPosition(WorldModel world, Point destPos) {
         //TODO! make undudes able to run through more things
-        Predicate<Point> canPassThrough = (p) -> world.withinBounds(p) && (!world.isOccupied(p) || (world.getOccupancyCell(p) instanceof Stump));
+        Predicate<Point> canPassThrough = (p) -> world.withinBounds(p) &&
+                (!world.isOccupied(p)
+                        || (world.getOccupancyCell(p) instanceof Stump)
+                        || (world.getOccupancyCell(p) instanceof Tree)
+                        || (world.getOccupancyCell(p) instanceof Sapling));
         //can pass through is lambda
         BiPredicate<Point, Point> withinReach = (p1, p2) -> p1.adjacent(p2);
 

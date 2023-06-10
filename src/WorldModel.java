@@ -90,6 +90,19 @@ public final class WorldModel {
         return nearestEntity(ofType, pos);
     }
 
+    public List<Entity> inProximity(Point pos, List<Class> kinds, int range){
+        List<Entity> entitiesInRange = new LinkedList<>();
+        for (Class kind : kinds) {
+            for (Entity entity : this.entities) {
+                if (entity.getClass() == kind && (pos.distanceManhattan(entity.getPosition()) < range)) {
+                    entitiesInRange.add(entity);
+                }
+            }
+        }
+        return entitiesInRange;
+    }
+
+
     private void removeEntityAt(Point pos) {
         if (withinBounds(pos) && getOccupancyCell(pos) != null) {
             Entity entity = getOccupancyCell(pos);
