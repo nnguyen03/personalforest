@@ -27,6 +27,12 @@ public class UnDude implements Moving{
         this.actionPeriod = actionPeriod;
         this.animationPeriod = animationPeriod;
     }
+    public void transformUnDude(Entity dude, WorldModel world, EventScheduler scheduler, ImageStore imageStore){
+        world.removeEntity(scheduler, this);
+        world.addEntity(dude);
+        ((Active)dude).scheduleActions(scheduler, world, imageStore);
+    }
+
 
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
         // TODO! Potential Issue: JOptionPane popup taking multiple clicks to close out

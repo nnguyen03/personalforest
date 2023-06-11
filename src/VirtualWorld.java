@@ -73,7 +73,7 @@ public final class VirtualWorld extends PApplet {
         zombiesAndSurpriseAlsoGod(pressed);
 
         // Second event
-        grimEvent(pressed);
+        //grimEvent(pressed);
 
     }
 
@@ -105,6 +105,9 @@ public final class VirtualWorld extends PApplet {
         theWalkingDude(dudesNearby);
 
         // spawn God
+        Entity god = Factory.createGod(FileParser.GOD_KEY, pressed, 0.4, 0.180, imageStore.getImageList(FileParser.TREE_KEY));
+        world.addEntity(god);
+        ((Active) god).scheduleActions(scheduler, world, imageStore);
     }
 
     private void theWalkingDude(List<Entity> dudesNearby){

@@ -20,6 +20,7 @@ public class FileParser {
 
     public static final String UNDUDE_KEY = "undude";
     public static final String GRIM_KEY = "grim";
+    public static final String GOD_KEY = "god";
     public static final String DUDE_KEY = "dude";
     public static final int DUDE_ACTION_PERIOD = 0;
     public static final int DUDE_ANIMATION_PERIOD = 1;

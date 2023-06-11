@@ -15,6 +15,7 @@ public class God implements Moving {
     private int imageIndex;
     private final double actionPeriod;
     private final double animationPeriod;
+    private static final int DUDE_LIMIT = 2;
 
     public God(String id, Point position, List<PImage> images, double actionPeriod, double animationPeriod) {
         this.id = id;
@@ -32,18 +33,29 @@ public class God implements Moving {
 
     @Override
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
-        // TODO! Potential Issue: JOptionPane popup taking multiple clicks to close out
-        // Check if any dudes are left
-        List<Entity> unDudes = world.getEntities().stream()
-                .filter(entity -> entity instanceof UnDude).toList();
-        if (unDudes.isEmpty()) {
-            // End message using JOptionPane
-            JOptionPane.showMessageDialog(null, "GAME OVER! Grroooaan. Bone appetit. - Undudes");
+//        // TODO! Potential Issue: JOptionPane popup taking multiple clicks to close out
+//        // Check if any dudes are left
+//        List<Entity> unDudes = world.getEntities().stream()
+//                .filter(entity -> entity instanceof UnDude).toList();
+//        if (unDudes.isEmpty()) {
+//            // End message using JOptionPane
+//            JOptionPane.showMessageDialog(null, "GAME OVER! Grroooaan. Bone appetit. - Undudes");
+//
+//            // Empty space for any other necessary actions when all dudes are eaten (if needed to be added)
+//
+//            return;
+//        }
 
-            // Empty space for any other necessary actions when all dudes are eaten (if needed to be added)
-
-            return;
+        Optional<Entity> target = world.findNearest(this.position, new ArrayList<>(List.of(UnDude.class)));
+        if (target.isPresent()) {
+            Entity unDudeRemove = target.get();
+            Point tgtPos = target.get().getPosition();
+            if (this.moveTo(world, target.get(), scheduler)) {
+                Entity dude = Factory.createDudeNotFull(FileParser.DUDE_KEY, tgtPos, .8, this.animationPeriod, DUDE_LIMIT, imageStore.getImageList(FileParser.DUDE_KEY));
+                ((UnDude)unDudeRemove).transformUnDude(dude, world, scheduler, imageStore);
+            }
         }
+        scheduler.scheduleEvent(this, Factory.createActivityAction(this, world, imageStore), this.actionPeriod);
     }
 
     @Override
@@ -84,8 +96,7 @@ public class God implements Moving {
     @Override
     public Point nextPosition(WorldModel world, Point destPos) {
         Predicate<Point> canPassThrough = (p) -> world.withinBounds(p) &&
-                (!world.isOccupied(p)
-                        || (world.getOccupancyCell(p) instanceof Obstacle));
+                (!world.isOccupied(p));
         //can pass through is lambda
         BiPredicate<Point, Point> withinReach = (p1, p2) -> p1.adjacent(p2);
 

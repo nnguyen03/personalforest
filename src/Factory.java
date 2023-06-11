@@ -6,6 +6,11 @@ public class Factory {
     private static final double SAPLING_ACTION_ANIMATION_PERIOD = 1.000; // have to be in sync since grows and gains health at same time
     private static final int SAPLING_HEALTH_LIMIT = 5;
 
+
+    public static Entity createGod(String id, Point position, double actionPeriod, double animationPeriod, List<PImage> images){
+        return new God(id, position, images, actionPeriod, animationPeriod);
+    }
+
     public static Entity createUnDude(String id, Point position, double actionPeriod, double animationPeriod, List<PImage> images){
         return new UnDude(id, position, images, actionPeriod, animationPeriod);
     }
