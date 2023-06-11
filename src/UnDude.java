@@ -17,6 +17,8 @@ public class UnDude implements Moving{
     private final double actionPeriod;
     private final double animationPeriod;
 
+    private static boolean flag = true;
+
     public UnDude(String id, Point position, List<PImage> images, double actionPeriod, double animationPeriod) {
         this.id = id;
         this.position = position;
@@ -31,24 +33,26 @@ public class UnDude implements Moving{
         // Check if any dudes are left
         List<Entity> dudes = world.getEntities().stream()
                 .filter(entity -> entity instanceof DudeNotFull || entity instanceof DudeFull).toList();
-
-        if (dudes.isEmpty()) {
+        if (flag && dudes.isEmpty()) {
             // End message using JOptionPane
             JOptionPane.showMessageDialog(null, "GAME OVER! Grroooaan. Bone appetit. - Undudes");
-
+            flag = false;
             // Empty space for any other necessary actions when all dudes are eaten (if needed to be added)
 
             return;
         }
+
         Optional<Entity> target = world.findNearest(this.position, new ArrayList<>(Arrays.asList(DudeNotFull.class, DudeFull.class)));
-        Point tgtPos = target.get().getPosition();
-        if (this.moveTo(world, target.get(), scheduler)) {
-            Entity unDude = Factory.createUnDude(FileParser.UNDUDE_KEY, tgtPos, 0.8, 0.180, imageStore.getImageList(FileParser.UNDUDE_KEY));
-            world.addEntity(unDude);
-            ((Active)unDude).scheduleActions(scheduler, world, imageStore);
+        if (target.isPresent()) {
+            Point tgtPos = target.get().getPosition();
+            if (this.moveTo(world, target.get(), scheduler)) {
+                Entity unDude = Factory.createUnDude(FileParser.UNDUDE_KEY, tgtPos, 0.8, 0.180, imageStore.getImageList(FileParser.UNDUDE_KEY));
+                world.addEntity(unDude);
+                ((Active) unDude).scheduleActions(scheduler, world, imageStore);
+            }
         }
-        scheduler.scheduleEvent(this, Factory.createActivityAction(this, world, imageStore), this.actionPeriod);
-    }
+            scheduler.scheduleEvent(this, Factory.createActivityAction(this, world, imageStore), this.actionPeriod);
+        }
 
     public Point nextPosition(WorldModel world, Point destPos) {
         //TODO! make undudes able to run through more things

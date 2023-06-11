@@ -7,7 +7,6 @@ import processing.core.*;
 
 public final class VirtualWorld extends PApplet {
     private static String[] ARGS;
-
     private static final Random rand = new Random();
     public static final int VIEW_WIDTH = 640;
     public static final int VIEW_HEIGHT = 480;
@@ -16,11 +15,9 @@ public final class VirtualWorld extends PApplet {
 
     public static final int VIEW_COLS = VIEW_WIDTH / TILE_WIDTH;
     public static final int VIEW_ROWS = VIEW_HEIGHT / TILE_HEIGHT;
-
     public static final String IMAGE_LIST_FILE_NAME = "imagelist";
     public static final String DEFAULT_IMAGE_NAME = "background_default";
     public static final int DEFAULT_IMAGE_COLOR = 0x808080;
-
     public static final String FAST_FLAG = "-fast";
     public static final String FASTER_FLAG = "-faster";
     public static final String FASTEST_FLAG = "-fastest";
@@ -40,7 +37,6 @@ public final class VirtualWorld extends PApplet {
     public void settings() {
         size(VIEW_WIDTH, VIEW_HEIGHT);
     }
-
     /*
        Processing entry point for "sketch" setup.
     */
@@ -90,8 +86,7 @@ public final class VirtualWorld extends PApplet {
         Optional<Entity> tgtHouse = world.findNearest(pressed, new ArrayList<>(List.of(House.class)));
 
         if (tgtHouse.isPresent()) {
-            Point tgtPos = tgtHouse.get().getPosition();
-            Entity grimReaper = Factory.createGrim(FileParser.GRIM_KEY, tgtPos, 0.8, 0.180, imageStore.getImageList(FileParser.GRIM_KEY));
+            Entity grimReaper = Factory.createGrim(FileParser.GRIM_KEY, pressed, 0.8, 0.180, imageStore.getImageList(FileParser.GRIM_KEY));
             world.addEntity(grimReaper);
             ((Active) grimReaper).scheduleActions(scheduler, world, imageStore);
         }
@@ -149,20 +144,19 @@ public final class VirtualWorld extends PApplet {
     // TODO!
     private void castleVisualization(Point pressed){
         int randCastle = rand.nextInt(7, 14);
-        int loop_counter = 20;
+        //TODO! Loop counter gone entirely
+//        int loop_counter = 20;
         while(randCastle > 0){
-            if(loop_counter == 0){
-                break;
-            }
+            //TODO! Why is there a check for loop counter = 0?
             Background castle = new Background("castle", imageStore.getImageList("castle"));
             Point destPoint = new Point(pressed.x + rand.nextInt(4), pressed.y + rand.nextInt(4));
-            Optional<PImage> image = this.world.getBackgroundImage(destPoint);
+//            Optional<PImage> image = this.world.getBackgroundImage(destPoint);
 
             // if background cell is already tombstone then rerun loop until tombstone can be placed elsewhere
-            if(image.equals(imageStore.getImageList("castle"))){
-                loop_counter--;
-                continue;
-            }
+//            if(image.equals(imageStore.getImageList("castle"))){
+//                loop_counter--;
+//                continue;
+//            }
 
             world.setBackgroundCell(destPoint, castle);
             randCastle--;

@@ -20,18 +20,23 @@ public class Grim implements Moving {
         this.actionPeriod = actionPeriod;
         this.animationPeriod = animationPeriod;
     }
+
 //TODO: Path Reaper to Unvisited House. Potential issue: findNearest requires List<Class>
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
-        Optional<Entity> target = world.findNearest(this.position, new ArrayList<>(List.of(House.class)));
+        Optional<Entity> target = world.findNearestTrishaGuha(this.position, (e) -> e instanceof House h && !h.hasUndude());
         if (target.isPresent()) {
             House house = (House) target.get();
-            if (!house.hasUndude()) {
-                Point tgtPos = house.getPosition();
-                if (this.moveTo(world, target.get(), scheduler)) {
-                    Entity unDude = Factory.createUnDude(FileParser.UNDUDE_KEY, tgtPos, 0.8, 0.180, imageStore.getImageList(FileParser.UNDUDE_KEY));
-                    world.addEntity(unDude);
-                    ((Active)unDude).scheduleActions(scheduler, world, imageStore);
-                    house.setUndude(true);
+            Point tgtPos = house.getPosition();
+            if (this.moveTo(world, target.get(), scheduler)) {
+                //TODO! loop through cardinal neighbors
+                for (Point point : PathingStrategy.CARDINAL_NEIGHBORS.apply(tgtPos).toList()) {
+                    if (!world.isOccupied(point)) {
+                        Entity unDude = Factory.createUnDude(FileParser.UNDUDE_KEY, tgtPos, 0.8, 0.180, imageStore.getImageList(FileParser.UNDUDE_KEY));
+                        world.addEntity(unDude);
+                        ((Active)unDude).scheduleActions(scheduler, world, imageStore);
+                        house.setUndude(true);
+                        break;
+                   }
                 }
             }
         }
@@ -58,8 +63,8 @@ public class Grim implements Moving {
     }
 
     public void _moveToHelper(WorldModel world, Entity target, EventScheduler scheduler){
-        world.removeEntity(scheduler, target);
-        scheduler.unscheduleAllEvents(target);
+        //world.removeEntity(scheduler, target);
+        //scheduler.unscheduleAllEvents(target);
     }
     public Point getPosition(){
         return position;

@@ -1,6 +1,7 @@
 import processing.core.PImage;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * Represents the 2D World in which this simulation is running.
@@ -87,6 +88,16 @@ public final class WorldModel {
             }
         }
 
+        return nearestEntity(ofType, pos);
+    }
+
+    public Optional<Entity> findNearestTrishaGuha(Point pos, Predicate<Entity> include) {
+        List<Entity> ofType = new LinkedList<>();
+        for (Entity entity : this.entities) {
+            if (include.test(entity)) {
+                ofType.add(entity);
+            }
+        }
         return nearestEntity(ofType, pos);
     }
 
