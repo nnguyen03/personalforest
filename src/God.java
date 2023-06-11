@@ -32,7 +32,18 @@ public class God implements Moving {
 
     @Override
     public void executeActivity(WorldModel world, ImageStore imageStore, EventScheduler scheduler) {
+        // TODO! Potential Issue: JOptionPane popup taking multiple clicks to close out
+        // Check if any dudes are left
+        List<Entity> unDudes = world.getEntities().stream()
+                .filter(entity -> entity instanceof UnDude).toList();
+        if (unDudes.isEmpty()) {
+            // End message using JOptionPane
+            JOptionPane.showMessageDialog(null, "GAME OVER! Grroooaan. Bone appetit. - Undudes");
 
+            // Empty space for any other necessary actions when all dudes are eaten (if needed to be added)
+
+            return;
+        }
     }
 
     @Override
