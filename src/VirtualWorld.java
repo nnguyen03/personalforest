@@ -34,6 +34,9 @@ public final class VirtualWorld extends PApplet {
     public WorldView view;
     public EventScheduler scheduler;
 
+    private static boolean firstEventBool = false;
+    private static boolean secondEventBool = false;
+
     public void settings() {
         size(VIEW_WIDTH, VIEW_HEIGHT);
     }
@@ -69,18 +72,20 @@ public final class VirtualWorld extends PApplet {
 
         // get location of mouse click
         Point pressed = mouseToPoint();
-        // First event
-        zombiesAndSurpriseAlsoGod(pressed);
 
-        // Second event
-        //grimEvent(pressed);
 
+        if (!firstEventBool && !secondEventBool) {
+            zombiesAndSurpriseAlsoGod(pressed);
+        }
+        else if (firstEventBool && !secondEventBool){
+            grimEvent(pressed);
+            secondEventBool = true;
+        }
+
+        firstEventBool = true;
     }
 
     private void grimEvent(Point pressed){
-        // TODO! Second event IN PROGRESS
-        // TODO! Two parts. Visualization and New Entity.
-
         // draw castles on screen in proximity to mouse click
         castleVisualization(pressed);
         Optional<Entity> tgtHouse = world.findNearest(pressed, new ArrayList<>(List.of(House.class)));
@@ -94,8 +99,6 @@ public final class VirtualWorld extends PApplet {
     }
 
     private void zombiesAndSurpriseAlsoGod (Point pressed){
-        // TODO! First event IN PROGRESS
-        // TODO! New Entity
 
         // draw tombstones on screen in proximity to mouse click
         tombstoneVisualization(pressed);
@@ -105,7 +108,7 @@ public final class VirtualWorld extends PApplet {
         theWalkingDude(dudesNearby);
 
         // spawn God
-        Entity god = Factory.createGod(FileParser.GOD_KEY, pressed, 0.4, 0.180, imageStore.getImageList(FileParser.TREE_KEY));
+        Entity god = Factory.createGod(FileParser.GOD_KEY, pressed, 0.4, 0.180, imageStore.getImageList(FileParser.GOD_KEY));
         world.addEntity(god);
         ((Active) god).scheduleActions(scheduler, world, imageStore);
     }
@@ -144,22 +147,22 @@ public final class VirtualWorld extends PApplet {
             rand_tombsAndMausoleums--;
         }
     }
-    // TODO!
     private void castleVisualization(Point pressed){
         int randCastle = rand.nextInt(7, 14);
-        //TODO! Loop counter gone entirely
-//        int loop_counter = 20;
+        int loop_counter = 20;
         while(randCastle > 0){
-            //TODO! Why is there a check for loop counter = 0?
+            if(loop_counter == 0){
+                break;
+            }
             Background castle = new Background("castle", imageStore.getImageList("castle"));
             Point destPoint = new Point(pressed.x + rand.nextInt(4), pressed.y + rand.nextInt(4));
-//            Optional<PImage> image = this.world.getBackgroundImage(destPoint);
+            Optional<PImage> image = this.world.getBackgroundImage(destPoint);
 
             // if background cell is already tombstone then rerun loop until tombstone can be placed elsewhere
-//            if(image.equals(imageStore.getImageList("castle"))){
-//                loop_counter--;
-//                continue;
-//            }
+            if(image.equals(imageStore.getImageList("castle"))){
+                loop_counter--;
+                continue;
+            }
 
             world.setBackgroundCell(destPoint, castle);
             randCastle--;
